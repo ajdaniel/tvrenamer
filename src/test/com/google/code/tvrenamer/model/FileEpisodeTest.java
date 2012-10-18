@@ -1,8 +1,10 @@
 package com.google.code.tvrenamer.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,22 +15,19 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.google.code.tvrenamer.controller.ShowInformationListener;
+
 
 public class FileEpisodeTest {
 	private static Logger logger = Logger.getLogger(FileEpisodeTest.class.getName());
 	
 	private List<File> testFiles;
-	
-	private UserPreferences prefs;
 	private ShowInformationListener mockListener;
 
 	@Before
 	public void setUp() throws Exception {
 		testFiles = new ArrayList<File>();
-		prefs = Mockito.mock(UserPreferences.class);
 		mockListener = mock(ShowInformationListener.class);
 	}
 
@@ -51,12 +50,10 @@ public class FileEpisodeTest {
 		show.setSeason(seasonNum, season5);
 		ShowStore.addShow(showName, show);
 		
-		Mockito.when(prefs.getRenameReplacementString()).thenReturn("%S [%sx%e] %t");
+		FileEpisode fileEpisode = new FileEpisode(showName, seasonNum, episodeNum, file);
+		fileEpisode.setStatus(EpisodeStatus.RENAMED);
 		
-		FileEpisode episode = new FileEpisode(showName, seasonNum, episodeNum, file);
-		episode.setStatus(EpisodeStatus.DOWNLOADED);
-		
-		String newFilename = episode.getNewFilename();
+		String newFilename = fileEpisode.getNewFilename();
 		
 		assertEquals("The Simpsons [5x10] $pringfield.avi", newFilename);
 	}
