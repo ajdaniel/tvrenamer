@@ -13,7 +13,6 @@ public class Constants {
 		byte[] buffer = new byte[10];
 		// Release env (jar)
 		InputStream versionStream = Constants.class.getResourceAsStream("/tvrenamer.version");
-
 		// Dev env
 		if (versionStream == null) {
 			versionStream = Constants.class.getResourceAsStream("/src/main/tvrenamer.version");
@@ -22,8 +21,10 @@ public class Constants {
 		try {
 			versionStream.read(buffer);
 			VERSION_NUMBER = new String(buffer).trim();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.log(Level.WARNING, "Exception when reading version file", e);
+			// Has to be unchecked exception as in static block, otherwise exception isn't actually handled (mainly for junit in ant)
+			throw new RuntimeException("Exception when reading version file", e);
 		}
 	}
 
